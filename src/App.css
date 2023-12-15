@@ -139,20 +139,4 @@ h1 {
 
 /* Responsive Styles */
 
-@media only screen and (max-width: 600px) {
-  /* Adjustments for small screens */
-  .todo-input {
-    flex-direction: column;
-    align-items: stretch;
-  }
 
-  .todo-input-item {
-    margin-right: 0;
-    margin-bottom: 15px;
-  }
-
-  .btnPrimary,
-  .secondaryBtn {
-    width: 100%;
-  }
-}
