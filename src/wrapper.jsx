@@ -11,12 +11,16 @@ const Wrapper = () => {
   const [completedTodos, setCompletedTodos] = useState([]);
 
   let handleAddTodo = (e) => {
+    e.preventDefault();
+    if (newTitle === "" || newDescription === "") {
+      return;
+    }
     let data = JSON.parse(localStorage.getItem("todolist"));
     if (data) {
       let newTodoItem = {
         title: newTitle,
         description: newDescription,
-        id: data.length == 0 ? 1 : data[data.length - 1].id + 1,
+        id: data.length === 0 ? 1 : data[data.length - 1].id + 1,
       };
       let updatedTodoArr = [...allTodos];
       updatedTodoArr.push(newTodoItem);
@@ -33,16 +37,31 @@ const Wrapper = () => {
       setTodos(updatedTodoArr);
       localStorage.setItem("todolist", JSON.stringify(updatedTodoArr));
     }
-    input_text_add.value = "";
-    input_text_add2.value = "";
-  };
 
+    setNewTitle("");
+    setNewDescription("");
+    input_text_add.value = "";
+input_text_add2.value = "";
+  };
+  // useEffect(() => {
+  //   setNewTitle("");
+  //   setNewDescription("");
+  // }, [allTodos]);
   const handleDeleteTodo = (id) => {
     let data = JSON.parse(localStorage.getItem("todolist"));
     if (data) {
-      let newFilter = data.filter((e) => e.id != id);
+      let newFilter = data.filter((e) => e.id !== id);
       localStorage.setItem("todolist", JSON.stringify(newFilter));
       setTodos(newFilter);
+    }
+  };
+
+  const handleDeleteCompletedTodo = (id) => {
+    let data = JSON.parse(localStorage.getItem("completedTodos"));
+    if (data.length !== 0) {
+      let newFilter = data.filter((e) => e.id !== id);
+      localStorage.setItem("completedTodos", JSON.stringify(newFilter));
+      setCompletedTodos(newFilter);
     }
   };
 
@@ -83,14 +102,6 @@ const Wrapper = () => {
     localStorage.setItem("todolist", JSON.stringify(f));
     setTodos(f);
   };
-  const handleDeleteCompletedTodo = (id) => {
-    let data = JSON.parse(localStorage.getItem("completedTodos"));
-    if (data.length != 0) {
-      let newFilter = data.filter((e) => e.id != id);
-      localStorage.setItem("completedTodos", JSON.stringify(newFilter));
-      setCompletedTodos(newFilter);
-    }
-  };
 
   useEffect(() => {
     let savedCompletedTodo = JSON.parse(localStorage.getItem("completedTodos"));
@@ -114,6 +125,7 @@ const Wrapper = () => {
             <div className="todo-input-item">
               <label>Title</label>
               <input
+                required
                 type="text"
                 onChange={(e) => setNewTitle(e.target.value)}
                 placeholder="What's the task title?"
@@ -123,8 +135,11 @@ const Wrapper = () => {
             <div className="todo-input-item">
               <label>Description</label>
               <input
+                required
                 type="text"
-                onChange={(e) => setNewDescription(e.target.value)}
+                onChange={(e) => {
+                  setNewDescription(e.target.value);
+                }}
                 placeholder="What's the task description?"
                 id="input_text_add2"
               />
